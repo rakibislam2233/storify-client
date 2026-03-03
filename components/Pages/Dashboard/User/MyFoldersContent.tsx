@@ -1,5 +1,6 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/skeleton";
 import { FileItem, Folder } from "@/interface/file.interface";
 import {
   deleteFile,
@@ -205,9 +206,17 @@ const MyFoldersContent = ({
       </nav>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-          <Loader2 className="w-10 h-10 animate-spin mb-4" />
-          <p>Loading your files...</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div
+              key={i}
+              className="bg-white border border-gray-50 p-4 rounded-xl space-y-3"
+            >
+              <Skeleton className="w-16 h-16 rounded-lg mx-auto" />
+              <Skeleton className="h-4 w-3/4 mx-auto" />
+              <Skeleton className="h-3 w-1/2 mx-auto" />
+            </div>
+          ))}
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
