@@ -1,6 +1,6 @@
 import MyFoldersContent from "@/components/Pages/Dashboard/User/MyFoldersContent";
-import { getAllFiles } from "@/services/file.service";
-import { getRootFolders } from "@/services/folder.service";
+import { getFilesByFolderId } from "@/services/file.service";
+import { getChildFolders, getRootFolders } from "@/services/folder.service";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -8,10 +8,18 @@ export const metadata: Metadata = {
   description: "Manage your folders and files.",
 };
 
-export default async function MyFoldersPage() {
+export default async function MyFoldersPage({
+  searchParams,
+}: {
+  searchParams: { folderId?: string };
+}) {
+  const folderId = searchParams.folderId || "root";
+
   const [foldersRes, filesRes] = await Promise.all([
-    getRootFolders().catch(() => ({ success: false, data: [] })),
-    getAllFiles({ folderId: "root" }).catch(() => ({
+    folderId === "root"
+      ? getRootFolders().catch(() => ({ success: false, data: [] }))
+      : getChildFolders(folderId).catch(() => ({ success: false, data: [] })),
+    getFilesByFolderId(folderId).catch(() => ({
       success: false,
       data: [],
     })),
@@ -19,8 +27,9 @@ export default async function MyFoldersPage() {
 
   return (
     <MyFoldersContent
-      initialFolders={foldersRes.success ? foldersRes.data : []}
-      initialFiles={filesRes.success ? filesRes.data : []}
+      currentFolderId={folderId}
+      initialFolders={foldersRes.success ? (foldersRes.data as any) : []}
+      initialFiles={filesRes.success ? (filesRes.data as any) : []}
     />
   );
 }

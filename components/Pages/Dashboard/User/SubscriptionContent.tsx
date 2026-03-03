@@ -4,11 +4,7 @@ import {
   ActiveSubscription,
   Package,
 } from "@/interface/subscription.interface";
-import {
-  getActiveSubscription,
-  getAllPackages,
-  purchasePackage,
-} from "@/services/subscription.service";
+import { purchasePackage } from "@/services/subscription.service";
 import {
   ChevronRight,
   CreditCard,
@@ -19,7 +15,8 @@ import {
   Loader2,
   Sparkles,
 } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 const SubscriptionContent = ({
@@ -29,24 +26,9 @@ const SubscriptionContent = ({
   initialPackages?: Package[];
   initialActiveSubscription?: ActiveSubscription | null;
 }) => {
-  const [packages, setPackages] = useState<Package[]>(initialPackages);
-  const [activeSubscription, setActiveSubscription] =
-    useState<ActiveSubscription | null>(initialActiveSubscription);
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
-
-  const fetchData = async () => {
-    try {
-      const [pkgs, active] = await Promise.all([
-        getAllPackages(),
-        getActiveSubscription(),
-      ]);
-      setPackages(pkgs);
-      setActiveSubscription(active);
-    } catch (_error) {
-      toast.error("Failed to load subscription data");
-    }
-  };
 
   const handlePurchase = async (packageId: string) => {
     setPurchasingId(packageId);
@@ -54,16 +36,22 @@ const SubscriptionContent = ({
       const res = await purchasePackage(packageId);
       if (res.success) {
         toast.success("Package purchased successfully!");
-        fetchData();
+        startTransition(() => {
+          router.refresh();
+        });
       } else {
         toast.error(res.message || "Purchase failed");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("An error occurred during purchase");
     } finally {
       setPurchasingId(null);
     }
   };
+
+  // Use props directly instead of internal state
+  const packages = initialPackages;
+  const activeSubscription = initialActiveSubscription;
 
   // Find active package details from the packages list to get limits
   const activePackageDetails = activeSubscription
@@ -81,7 +69,7 @@ const SubscriptionContent = ({
         </p>
       </div>
 
-      {loading ? (
+      {isPending ? (
         <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 mb-12 flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse">
           <div className="flex items-center gap-5 w-full">
             <Skeleton className="w-14 h-14 rounded-xl shrink-0" />
@@ -150,7 +138,7 @@ const SubscriptionContent = ({
       ) : null}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {loading
+        {isPending
           ? Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}

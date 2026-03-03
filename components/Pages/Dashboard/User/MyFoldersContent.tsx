@@ -2,17 +2,8 @@
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileItem, Folder } from "@/interface/file.interface";
-import {
-  deleteFile,
-  getFilesByFolderId,
-  uploadFile,
-} from "@/services/file.service";
-import {
-  createFolder,
-  deleteFolder,
-  getChildFolders,
-  getRootFolders,
-} from "@/services/folder.service";
+import { deleteFile, uploadFile } from "@/services/file.service";
+import { createFolder, deleteFolder } from "@/services/folder.service";
 import {
   ChevronRight,
   FileText,
@@ -24,66 +15,46 @@ import {
   Trash2,
   Upload,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+
+import { useRouter } from "next/navigation";
 
 const MyFoldersContent = ({
   initialFolders = [],
   initialFiles = [],
+  currentFolderId = "root",
 }: {
   initialFolders?: Folder[];
   initialFiles?: FileItem[];
+  currentFolderId?: string;
 }) => {
-  const [currentFolderId, setCurrentFolderId] = useState<string>("root");
-  const [folders, setFolders] = useState<Folder[]>(initialFolders);
-  const [files, setFiles] = useState<FileItem[]>(initialFiles);
-  const [breadcrumbs, setBreadcrumbs] = useState<
-    { id: string; name: string }[]
-  >([{ id: "root", name: "My Folders" }]);
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
-  useEffect(() => {
-    // Only fetch if we are NOT at root (since root is handled by server component)
-    if (currentFolderId !== "root") {
-      fetchContent(currentFolderId);
-    }
-  }, [currentFolderId]);
+  // Use props directly
+  const folders = initialFolders;
+  const files = initialFiles;
 
-  const fetchContent = async (folderId: string) => {
-    setLoading(true);
-    try {
-      let foldersData;
-      if (folderId === "root") {
-        const res = await getRootFolders();
-        foldersData = res.success ? res.data : [];
-      } else {
-        const res = await getChildFolders(folderId);
-        foldersData = res.success ? res.data : [];
-      }
-
-      const filesRes = await getFilesByFolderId(folderId);
-      const filesData = filesRes.success ? filesRes.data : [];
-
-      setFolders(foldersData);
-      setFiles(filesData);
-    } catch (_err) {
-      toast.error("Failed to load content");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // For breadcrumbs, we can build a simple one for now or just have Home/Current
+  // In a more complex app, we'd pass the full path from the server
+  const breadcrumbs = [{ id: "root", name: "My Folders" }];
+  if (currentFolderId !== "root") {
+    breadcrumbs.push({ id: currentFolderId, name: "Subfolder" });
+  }
 
   const handleFolderClick = (folder: Folder) => {
-    setCurrentFolderId(folder.id);
-    setBreadcrumbs([...breadcrumbs, { id: folder.id, name: folder.name }]);
+    router.push(`?folderId=${folder.id}`);
   };
 
-  const handleBreadcrumbClick = (id: string, index: number) => {
-    setCurrentFolderId(id);
-    setBreadcrumbs(breadcrumbs.slice(0, index + 1));
+  const handleBreadcrumbClick = (id: string) => {
+    if (id === "root") {
+      router.push("/dashboard/user/my-folders");
+    } else {
+      router.push(`?folderId=${id}`);
+    }
   };
 
   const handleCreateFolder = async () => {
@@ -95,7 +66,7 @@ const MyFoldersContent = ({
         toast.success("Folder created successfully");
         setNewFolderName("");
         setIsCreateFolderModalOpen(false);
-        fetchContent(currentFolderId);
+        router.refresh();
       } else {
         toast.error(res.message || "Failed to create folder");
       }
@@ -119,7 +90,7 @@ const MyFoldersContent = ({
       const res = await uploadFile(formData);
       if (res.success) {
         toast.success("File uploaded successfully");
-        fetchContent(currentFolderId);
+        router.refresh();
       } else {
         toast.error(res.message || "Upload failed");
       }
@@ -136,7 +107,7 @@ const MyFoldersContent = ({
       const res = await deleteFolder(id);
       if (res.success) {
         toast.success("Folder deleted");
-        fetchContent(currentFolderId);
+        router.refresh();
       }
     } catch (_err) {
       toast.error("Failed to delete");
@@ -149,7 +120,7 @@ const MyFoldersContent = ({
       const res = await deleteFile(id);
       if (res.success) {
         toast.success("File deleted");
-        fetchContent(currentFolderId);
+        router.refresh();
       }
     } catch (_err) {
       toast.error("Failed to delete");
@@ -192,7 +163,7 @@ const MyFoldersContent = ({
           <div key={crumb.id} className="flex items-center gap-2">
             {index > 0 && <ChevronRight className="w-4 h-4 text-gray-400" />}
             <button
-              onClick={() => handleBreadcrumbClick(crumb.id, index)}
+              onClick={() => handleBreadcrumbClick(crumb.id)}
               className={`hover:text-primary transition-colors ${
                 index === breadcrumbs.length - 1
                   ? "text-gray-900 font-bold"
@@ -205,21 +176,7 @@ const MyFoldersContent = ({
         ))}
       </nav>
 
-      {loading ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              className="bg-white border border-gray-50 p-4 rounded-xl space-y-3"
-            >
-              <Skeleton className="w-16 h-16 rounded-lg mx-auto" />
-              <Skeleton className="h-4 w-3/4 mx-auto" />
-              <Skeleton className="h-3 w-1/2 mx-auto" />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {/* List Folders */}
           {folders.map((folder) => (
             <div
@@ -294,7 +251,6 @@ const MyFoldersContent = ({
                 or uploading a file.
               </p>
             </div>
-          )}
         </div>
       )}
 
