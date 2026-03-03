@@ -3,16 +3,16 @@
 import Logo from "@/components/Shared/Navbar/Logo";
 import { cn } from "@/lib/utils";
 import {
-    Bell,
-    Cloud,
-    CreditCard,
-    FolderOpen,
-    HardDrive,
-    HelpCircle,
-    LayoutDashboard,
-    Settings,
-    Upload,
-    User
+  Bell,
+  Cloud,
+  CreditCard,
+  FolderOpen,
+  HardDrive,
+  HelpCircle,
+  LayoutDashboard,
+  Settings,
+  Upload,
+  User,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,27 +28,18 @@ const UserSidebar = ({
 
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard/user" },
+    { name: "My Folders", icon: FolderOpen, href: "/dashboard/user/folders" },
     {
-      name: "My Files",
-      icon: Cloud,
-      href: "/dashboard/user/files",
-    },
-    { name: "Folders", icon: FolderOpen, href: "/dashboard/user/folders" },
-    { name: "Upload", icon: Upload, href: "/dashboard/user/upload" },
-    { name: "Storage", icon: HardDrive, href: "/dashboard/user/storage" },
-    { name: "Subscription", icon: CreditCard, href: "/dashboard/user/subscription" },
-    {
-      name: "Notifications",
-      icon: Bell,
-      href: "/dashboard/user/notifications",
-      badge: 2,
+      name: "Subscription",
+      icon: CreditCard,
+      href: "/dashboard/user/subscription",
     },
     { name: "My Profile", icon: User, href: "/dashboard/user/profile" },
   ];
 
   const settingsItems = [
-    { name: "Settings", icon: Settings, href: "/dashboard/user/settings" },
-    { name: "Help Center", icon: HelpCircle, href: "/dashboard/user/help" },
+    { name: "Settings", icon: Settings, href: "/dashboard/user" },
+    { name: "Help Center", icon: HelpCircle, href: "/dashboard/user" },
   ];
 
   return (
@@ -85,7 +76,7 @@ const UserSidebar = ({
                 href={item.href}
                 onClick={onClose}
                 className={cn(
-                  "flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-colors no-underline",
+                  "flex items-center gap-3 px-4 py-4 text-sm font-semibold transition-colors no-underline",
                   isActive
                     ? "bg-white text-primary border-l-4 border-primary"
                     : "text-gray-500 hover:text-primary",
@@ -98,11 +89,6 @@ const UserSidebar = ({
                   )}
                 />
                 <span>{item.name}</span>
-                {item.badge && (
-                  <span className="ml-auto bg-primary text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">
-                    {item.badge}
-                  </span>
-                )}
               </Link>
             );
           })}

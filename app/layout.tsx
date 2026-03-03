@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Epilogue } from "next/font/google";
-import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -22,12 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${epilogue.className}`}
-        suppressHydrationWarning={true}
-      >
+      <body className={`${epilogue.className}`} suppressHydrationWarning={true}>
         {children}
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-center" richColors />
       </body>
     </html>
   );

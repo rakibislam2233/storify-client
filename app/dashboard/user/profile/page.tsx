@@ -1,9 +1,9 @@
 import UserProfileContent from "@/components/Pages/Dashboard/User/UserProfileContent";
-import { getMyProfileAction } from "../_actions";
+import { getMyProfile } from "@/services/user.service";
 
 const UserProfilePage = async () => {
-  const profile = await getMyProfileAction();
-  return <UserProfileContent profile={profile?.data} />;
+  const profile = await getMyProfile();
+  return <UserProfileContent profile={profile} />;
 };
 
 export default UserProfilePage;

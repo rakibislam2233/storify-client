@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { Button } from "@/components/ui/button";
+import { FormInput } from "@/components/ui/form-input";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { IUser } from "@/interface/user.interface";
@@ -32,10 +33,8 @@ const UserProfileContent = ({
       const updateData = {
         ...formData,
       };
-
       await updateMyProfile(updateData);
       toast.success("Profile updated successfully!");
-
       // Refresh profile data
       const updatedProfile = await getMyProfile();
       setProfile(updatedProfile);
@@ -47,7 +46,7 @@ const UserProfileContent = ({
   };
 
   return (
-    <div className="w-full max-w-5xl  mx-auto font-epilogue">
+    <div className="w-full max-w-5xl mx-auto">
       <div className="mb-8">
         <h2 className="text-2xl font-extrabold text-[#25324B]">My Profile</h2>
         <p className="text-gray-500 font-medium text-sm">
@@ -55,9 +54,9 @@ const UserProfileContent = ({
         </p>
       </div>
 
-      <div className="w-full space-y-8 rounded-lg bg-amber-200">
+      <div className="w-full space-y-8 ">
         <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-white border border-gray-100 p-8 shadow-none">
+          <div className="bg-white border border-gray-100 p-8 shadow-none rounded">
             <div className="flex items-center gap-8 mb-10 pb-10 border-b border-gray-50">
               <div className="relative group cursor-pointer">
                 <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-50 border border-gray-100 relative">
@@ -88,65 +87,30 @@ const UserProfileContent = ({
 
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-bold text-[#25324B] mb-2">
-                    Full Name
-                  </label>
-                  <Input
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={(e) =>
-                      setFormData({ ...formData, fullName: e.target.value })
-                    }
-                    className="rounded-none border-gray-200 focus-visible:ring-0 focus-visible:border-primary shadow-none h-11"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-[#25324B] mb-2">
-                    Email
-                  </label>
-                  <Input
-                    value={profile?.email || ""}
-                    disabled
-                    className="rounded-none border-gray-200 bg-gray-50 shadow-none h-11"
-                  />
-                </div>
+                <FormInput
+                  label="Full Name"
+                  name="fullName"
+                  value={profile?.fullName || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
+                />
+                <FormInput
+                  label="Email"
+                  name="email"
+                  value={profile?.email || ""}
+                  disabled
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-bold text-[#25324B] mb-2">
-                    Phone
-                  </label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <Input
-                      name="phone"
-                      value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
-                      className="pl-10 rounded-none border-gray-200 focus-visible:ring-0 focus-visible:border-primary shadow-none h-11"
-                      placeholder="Enter phone number"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-bold text-[#25324B] mb-2">
-                  Bio
-                </label>
-                <Textarea
-                  name="bio"
-                  value={formData.bio}
+                <FormInput
+                  label="Phone"
+                  name="phone"
+                  value={formData.phone}
                   onChange={(e) =>
-                    setFormData({ ...formData, bio: e.target.value })
+                    setFormData({ ...formData, phone: e.target.value })
                   }
-                  className="rounded-none border-gray-200 focus-visible:ring-0 focus-visible:border-primary shadow-none resize-none"
-                  rows={4}
-                  placeholder="Tell us about yourself..."
                 />
               </div>
             </div>
