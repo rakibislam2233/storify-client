@@ -3,15 +3,11 @@
 import Logo from "@/components/Shared/Navbar/Logo";
 import { cn } from "@/lib/utils";
 import {
-  Bell,
-  Cloud,
   CreditCard,
   FolderOpen,
-  HardDrive,
   HelpCircle,
   LayoutDashboard,
   Settings,
-  Upload,
   User,
 } from "lucide-react";
 import Link from "next/link";
