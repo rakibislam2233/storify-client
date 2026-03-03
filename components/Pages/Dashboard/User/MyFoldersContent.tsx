@@ -31,10 +31,14 @@ const MyFoldersContent = ({
   initialFolders = [],
   initialFiles = [],
   currentFolderId = "root",
+  ancestry = [],
+  slug = [],
 }: {
   initialFolders?: Folder[];
   initialFiles?: FileItem[];
   currentFolderId?: string;
+  ancestry?: Folder[];
+  slug?: string[];
 }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -47,25 +51,25 @@ const MyFoldersContent = ({
   const folders = initialFolders;
   const files = initialFiles;
 
-  const breadcrumbs = [{ id: "root", name: "My Files" }];
-  if (currentFolderId !== "root") {
-    breadcrumbs.push({ id: currentFolderId, name: "Projects" });
-    breadcrumbs.push({ id: "current", name: "Storify SaaS" });
-  }
+  const breadcrumbs = [
+    { id: "root", name: "My Files", path: "/dashboard/user/my-folders" },
+    ...ancestry.map((folder, index) => ({
+      id: folder.id,
+      name: folder.name,
+      path: `/dashboard/user/my-folders/${slug.slice(0, index + 1).join("/")}`,
+    })),
+  ];
 
   const handleFolderClick = (folder: Folder) => {
+    const newSlug = [...slug, folder.id];
     startTransition(() => {
-      router.push(`?folderId=${folder.id}`);
+      router.push(`/dashboard/user/my-folders/${newSlug.join("/")}`);
     });
   };
 
-  const handleBreadcrumbClick = (id: string) => {
+  const handleBreadcrumbClick = (path: string) => {
     startTransition(() => {
-      if (id === "root") {
-        router.push("/dashboard/user/my-folders");
-      } else {
-        router.push(`?folderId=${id}`);
-      }
+      router.push(path);
     });
   };
 
@@ -188,7 +192,7 @@ const MyFoldersContent = ({
             <div key={crumb.id} className="flex items-center gap-2">
               {index > 0 && <ChevronRight className="w-4 h-4 text-gray-300" />}
               <button
-                onClick={() => handleBreadcrumbClick(crumb.id)}
+                onClick={() => handleBreadcrumbClick(crumb.path)}
                 className={cn(
                   "transition-colors",
                   index === breadcrumbs.length - 1

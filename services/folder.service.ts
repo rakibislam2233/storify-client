@@ -81,3 +81,13 @@ export async function getChildFolders(parentId: string) {
     throw error;
   }
 }
+
+export async function getFolderAncestry(id: string) {
+  try {
+    const res = await api.get<Folder[]>(`/folders/${id}/ancestry`);
+    return res;
+  } catch (error: any) {
+    console.error("Failed to fetch folder ancestry:", error.message);
+    throw error;
+  }
+}
