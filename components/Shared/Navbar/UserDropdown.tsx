@@ -1,24 +1,26 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { IUser, UserRole } from "@/interface/user.interface";
+import { IUser } from "@/interface/user.interface";
 import { cn } from "@/lib/utils";
 import { logoutUser } from "@/services/auth.service";
 import { motion } from "framer-motion";
 import {
-  Briefcase,
-  ChevronDown,
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  User as UserIcon,
+    ChevronDown,
+    Cloud,
+    CreditCard,
+    HardDrive,
+    LayoutDashboard,
+    LogOut,
+    Settings,
+    User as UserIcon
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -110,6 +112,30 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
           </DropdownMenuItem>
 
           <DropdownMenuItem
+            onClick={() => router.push(`${dashboardHref}/files`)}
+            className="px-3 py-2.5 text-sm  text-gray-700 rounded-md cursor-pointer flex items-center gap-3 transition-colors focus:text-white hover:bg-gray-50 focus:bg-primary"
+          >
+            <Cloud className="w-4 h-4 text-primary" />
+            <span className="font-medium">My Files</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => router.push(`${dashboardHref}/storage`)}
+            className="px-3 py-2.5 text-sm  text-gray-700 rounded-md cursor-pointer flex items-center gap-3 transition-colors focus:text-white hover:bg-gray-50 focus:bg-primary"
+          >
+            <HardDrive className="w-4 h-4 text-primary" />
+            <span className="font-medium">Storage</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => router.push(`${dashboardHref}/subscription`)}
+            className="px-3 py-2.5 text-sm  text-gray-700 rounded-md cursor-pointer flex items-center gap-3 transition-colors focus:text-white hover:bg-gray-50 focus:bg-primary"
+          >
+            <CreditCard className="w-4 h-4 text-primary" />
+            <span className="font-medium">Subscription</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
             onClick={() => router.push(`${dashboardHref}/profile`)}
             className="px-3 py-2.5 text-sm  text-gray-700 rounded-md cursor-pointer flex items-center gap-3 transition-colors focus:text-white hover:bg-gray-50 focus:bg-primary"
           >
@@ -117,25 +143,13 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
             <span className="font-medium">My Profile</span>
           </DropdownMenuItem>
 
-          {user?.role === UserRole.COMPANY && (
-            <>
-              <DropdownMenuItem
-                onClick={() => router.push(`${dashboardHref}/jobs`)}
-                className="px-3 py-2.5 text-sm  text-gray-700 rounded-md cursor-pointer flex items-center gap-3 transition-colors focus:text-white hover:bg-gray-50 focus:bg-primary"
-              >
-                <Briefcase className="w-4 h-4 text-primary" />
-                <span className="font-medium">My Jobs</span>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                onClick={() => router.push(`${dashboardHref}/settings`)}
-                className="px-3 py-2.5 text-sm  text-gray-700 rounded-md cursor-pointer flex items-center gap-3 transition-colors focus:text-white hover:bg-gray-50 focus:bg-primary"
-              >
-                <Settings className="w-4 h-4 text-primary" />
-                <span className="font-medium">Settings</span>
-              </DropdownMenuItem>
-            </>
-          )}
+          <DropdownMenuItem
+            onClick={() => router.push(`${dashboardHref}/settings`)}
+            className="px-3 py-2.5 text-sm  text-gray-700 rounded-md cursor-pointer flex items-center gap-3 transition-colors focus:text-white hover:bg-gray-50 focus:bg-primary"
+          >
+            <Settings className="w-4 h-4 text-primary" />
+            <span className="font-medium">Settings</span>
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator className="bg-gray-100" />
 

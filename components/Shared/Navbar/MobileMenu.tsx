@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { IUser } from "@/interface/user.interface";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { HiMenuAlt2 } from "react-icons/hi";
+import Logo from "./Logo";
 import UserDropdown from "./UserDropdown";
 
 interface MobileMenuProps {
@@ -50,18 +50,7 @@ const MobileMenu = ({ user, dashboardHref }: MobileMenuProps) => {
             onClick={() => setIsOpen(false)}
             className="flex items-center justify-center gap-1"
           >
-            <div className="relative size-10">
-              <Image
-                src="/asset/logo/logo.png"
-                alt="QuickHire Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <span className="text-xl font-extrabold text-[#25324B]">
-              QuickHire
-            </span>
+            <Logo />
           </Link>
           <button
             onClick={() => setIsOpen(false)}
@@ -78,18 +67,39 @@ const MobileMenu = ({ user, dashboardHref }: MobileMenuProps) => {
             </span>
           </div>
           <Link
-            href="/jobs"
+            href="/dashboard"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-4 text-base font-bold text-gray-600 hover:text-primary hover:bg-white transition-all rounded-lg"
           >
-            Find Jobs
+            Dashboard
           </Link>
           <Link
-            href="/companies"
+            href="/pricing"
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-4 text-base font-bold text-gray-600 hover:text-primary hover:bg-white transition-all rounded-lg"
           >
-            Browse Companies
+            Pricing
+          </Link>
+          <Link
+            href="/features"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 px-4 py-4 text-base font-bold text-gray-600 hover:text-primary hover:bg-white transition-all rounded-lg"
+          >
+            Features
+          </Link>
+          <Link
+            href="/about"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 px-4 py-4 text-base font-bold text-gray-600 hover:text-primary hover:bg-white transition-all rounded-lg"
+          >
+            About
+          </Link>
+          <Link
+            href="/contact"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3 px-4 py-4 text-base font-bold text-gray-600 hover:text-primary hover:bg-white transition-all rounded-lg"
+          >
+            Contact
           </Link>
         </nav>
 
@@ -101,13 +111,13 @@ const MobileMenu = ({ user, dashboardHref }: MobileMenuProps) => {
               <Link href="/login" onClick={() => setIsOpen(false)}>
                 <Button
                   variant="outline"
-                  className="w-full h-12 border-primary text-primary hover:bg-primary/5 font-bold rounded-none"
+                  className="w-full h-12 border-primary text-primary hover:bg-primary/5 font-bold rounded"
                 >
                   Login
                 </Button>
               </Link>
               <Link href="/register" onClick={() => setIsOpen(false)}>
-                <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-none shadow-lg shadow-primary/20">
+                <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded shadow-lg shadow-primary/20">
                   Sign Up
                 </Button>
               </Link>
