@@ -1,6 +1,7 @@
 "use server";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Folder } from "@/interface/file.interface";
+import { revalidatePath } from "next/cache";
 import { api } from "./api";
 
 export async function createFolder(data: {
@@ -9,6 +10,7 @@ export async function createFolder(data: {
 }) {
   try {
     const res = await api.post("/folders", data);
+    revalidatePath("/dashboard/user/my-folders", "layout");
     return res;
   } catch (error: any) {
     console.error("Failed to create folder:", error.message);
@@ -55,6 +57,7 @@ export async function updateFolder(
 ) {
   try {
     const res = await api.patch(`/folders/${id}`, data);
+    revalidatePath("/dashboard/user/my-folders", "layout");
     return res;
   } catch (error: any) {
     console.error("Failed to update folder:", error.message);
@@ -65,6 +68,7 @@ export async function updateFolder(
 export async function deleteFolder(id: string) {
   try {
     const res = await api.delete(`/folders/${id}`);
+    revalidatePath("/dashboard/user/my-folders", "layout");
     return res;
   } catch (error: any) {
     console.error("Failed to delete folder:", error.message);

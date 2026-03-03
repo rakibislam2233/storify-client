@@ -1,5 +1,4 @@
 "use client";
-
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileItem, Folder } from "@/interface/file.interface";
 import { cn } from "@/lib/utils";
@@ -41,7 +40,6 @@ const MyFoldersContent = ({
   const [isPending, startTransition] = useTransition();
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
 
   const isRoot = currentFolderId === "root";
@@ -73,82 +71,76 @@ const MyFoldersContent = ({
 
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) return;
-    try {
-      const parentId = currentFolderId === "root" ? undefined : currentFolderId;
-      const res = await createFolder({ name: newFolderName, parentId });
-      if (res.success) {
-        toast.success("Folder created successfully");
-        setNewFolderName("");
-        setIsCreateFolderModalOpen(false);
-        startTransition(() => {
-          router.refresh();
-        });
-      } else {
-        toast.error(res.message || "Failed to create folder");
+    startTransition(async () => {
+      try {
+        const parentId =
+          currentFolderId === "root" ? undefined : currentFolderId;
+        const res = await createFolder({ name: newFolderName, parentId });
+        if (res.success) {
+          toast.success("Folder created successfully");
+          setNewFolderName("");
+          setIsCreateFolderModalOpen(false);
+        } else {
+          toast.error(res.message || "Failed to create folder");
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("An error occurred");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("An error occurred");
-    }
+    });
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      if (currentFolderId !== "root") {
-        formData.append("folderId", currentFolderId);
-      }
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        if (currentFolderId !== "root") {
+          formData.append("folderId", currentFolderId);
+        }
 
-      const res = await uploadFile(formData);
-      if (res.success) {
-        toast.success("File uploaded successfully");
-        startTransition(() => {
-          router.refresh();
-        });
-      } else {
-        toast.error(res.message || "Upload failed");
+        const res = await uploadFile(formData);
+        if (res.success) {
+          toast.success("File uploaded successfully");
+        } else {
+          toast.error(res.message || "Upload failed");
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("An error occurred during upload");
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("An error occurred during upload");
-    } finally {
-      setIsUploading(false);
-    }
+    });
   };
 
   const handleDeleteFolder = async (id: string) => {
     if (!confirm("Are you sure you want to delete this folder?")) return;
-    try {
-      const res = await deleteFolder(id);
-      if (res.success) {
-        toast.success("Folder deleted");
-        startTransition(() => {
-          router.refresh();
-        });
+    startTransition(async () => {
+      try {
+        const res = await deleteFolder(id);
+        if (res.success) {
+          toast.success("Folder deleted");
+        }
+      } catch (_err) {
+        toast.error("Failed to delete");
       }
-    } catch (_err) {
-      toast.error("Failed to delete");
-    }
+    });
   };
 
   const handleDeleteFile = async (id: string) => {
     if (!confirm("Are you sure you want to delete this file?")) return;
-    try {
-      const res = await deleteFile(id);
-      if (res.success) {
-        toast.success("File deleted");
-        startTransition(() => {
-          router.refresh();
-        });
+    startTransition(async () => {
+      try {
+        const res = await deleteFile(id);
+        if (res.success) {
+          toast.success("File deleted");
+        }
+      } catch (_err) {
+        toast.error("Failed to delete");
       }
-    } catch (_err) {
-      toast.error("Failed to delete");
-    }
+    });
   };
 
   const formatSize = (bytes: number) => {
@@ -208,21 +200,35 @@ const MyFoldersContent = ({
         <div className="flex items-center gap-4">
           <button
             onClick={() => setIsCreateFolderModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2.5 bg-white border-2 border-primary text-primary rounded-xl font-bold hover:bg-primary/5 transition-all outline-none"
+            disabled={isPending}
+            className="flex items-center gap-2 px-6 py-2.5 bg-white border-2 border-primary text-primary rounded-xl font-bold hover:bg-primary/5 transition-all outline-none disabled:opacity-50"
           >
-            <Plus className="w-5 h-5" />
+            {isPending ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Plus className="w-5 h-5" />
+            )}
             <span>New Folder</span>
           </button>
 
           {!isRoot && (
-            <label className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl font-bold cursor-pointer hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-              <Upload className="w-5 h-5" />
+            <label
+              className={cn(
+                "flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl font-bold cursor-pointer hover:bg-primary/90 transition-all shadow-lg shadow-primary/20",
+                isPending && "opacity-50 pointer-events-none",
+              )}
+            >
+              {isPending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Upload className="w-5 h-5" />
+              )}
               <span>Upload File</span>
               <input
                 type="file"
                 className="hidden"
                 onChange={handleFileUpload}
-                disabled={isUploading}
+                disabled={isPending}
               />
             </label>
           )}
@@ -414,32 +420,18 @@ const MyFoldersContent = ({
               </button>
               <button
                 onClick={handleCreateFolder}
-                disabled={!newFolderName.trim()}
-                className="flex-1 px-4 py-4 bg-primary text-white rounded-2xl font-extrabold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
+                disabled={!newFolderName.trim() || isPending}
+                className="flex-1 px-4 py-4 bg-primary text-white rounded-2xl font-extrabold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                Create Folder
+                {isPending && <Loader2 className="w-5 h-5 animate-spin" />}
+                {isPending ? "Creating..." : "Create Folder"}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Uploading Progress Overlay */}
-      {isUploading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm">
-          <div className="flex flex-col items-center">
-            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 animate-pulse">
-              <Loader2 className="w-10 h-10 text-primary animate-spin" />
-            </div>
-            <p className="text-xl font-black text-[#25324B] mb-1">
-              Uploading file...
-            </p>
-            <p className="text-gray-400 font-bold text-sm">
-              Please wait while we process your file.
-            </p>
-          </div>
-        </div>
-      )}
+      {/* Removed Uploading Progress Overlay */}
     </div>
   );
 };

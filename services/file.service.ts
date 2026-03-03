@@ -1,11 +1,13 @@
 "use server";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FileItem } from "@/interface/file.interface";
+import { revalidatePath } from "next/cache";
 import { api } from "./api";
 
 export async function uploadFile(formData: FormData) {
   try {
     const res = await api.post("/files", formData);
+    revalidatePath("/dashboard/user/my-folders", "layout");
     return res;
   } catch (error: any) {
     console.error("Failed to upload file:", error.message);
@@ -68,6 +70,7 @@ export async function updateFile(
 ) {
   try {
     const res = await api.patch(`/files/${id}`, data);
+    revalidatePath("/dashboard/user/my-folders", "layout");
     return res;
   } catch (error: any) {
     console.error("Failed to update file:", error.message);
@@ -78,6 +81,7 @@ export async function updateFile(
 export async function deleteFile(id: string) {
   try {
     const res = await api.delete(`/files/${id}`);
+    revalidatePath("/dashboard/user/my-folders", "layout");
     return res;
   } catch (error: any) {
     console.error("Failed to delete file:", error.message);
