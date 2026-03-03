@@ -1,9 +1,13 @@
 "use server";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  ActiveSubscription,
+  Package,
+} from "@/interface/subscription.interface";
 import { getCookie } from "@/utils/tokenHandlers";
 import { api } from "./api";
 
-export async function getAllPackages() {
+export async function getAllPackages(): Promise<Package[]> {
   try {
     const res = await api.get("/packages");
     if (!res.success) {
@@ -34,7 +38,9 @@ export async function purchasePackage(packageId: string) {
   }
 }
 
-export async function getMySubscriptionHistories() {
+export async function getMySubscriptionHistories(): Promise<
+  ActiveSubscription[]
+> {
   const accessToken = await getCookie("accessToken");
   if (!accessToken) {
     throw new Error("User not authenticated");
@@ -52,7 +58,7 @@ export async function getMySubscriptionHistories() {
   }
 }
 
-export async function getActiveSubscription() {
+export async function getActiveSubscription(): Promise<ActiveSubscription | null> {
   const accessToken = await getCookie("accessToken");
   if (!accessToken) {
     return null;

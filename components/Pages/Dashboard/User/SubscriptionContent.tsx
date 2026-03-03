@@ -7,9 +7,12 @@ import {
   purchasePackage,
 } from "@/services/subscription.service";
 import {
+  ChevronRight,
   CreditCard,
   FileCheck,
+  FolderOpen,
   HardDrive,
+  Layers,
   Loader2,
   Sparkles,
 } from "lucide-react";
@@ -164,7 +167,7 @@ const SubscriptionContent = ({
               </div>
             ))
           : packages.map((pkg) => {
-              const isActive = activeSubscription?.packageId === pkg.id;
+              const isActive = activeSubscription?.packageName === pkg.name;
               return (
                 <div
                   key={pkg.id}
