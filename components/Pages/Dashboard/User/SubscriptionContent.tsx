@@ -1,6 +1,9 @@
 "use client";
-
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ActiveSubscription,
+  Package,
+} from "@/interface/subscription.interface";
 import {
   getActiveSubscription,
   getAllPackages,
@@ -23,13 +26,12 @@ const SubscriptionContent = ({
   initialPackages = [],
   initialActiveSubscription = null,
 }: {
-  initialPackages?: any[];
-  initialActiveSubscription?: any;
+  initialPackages?: Package[];
+  initialActiveSubscription?: ActiveSubscription | null;
 }) => {
-  const [packages, setPackages] = useState<any[]>(initialPackages);
-  const [activeSubscription, setActiveSubscription] = useState<any>(
-    initialActiveSubscription,
-  );
+  const [packages, setPackages] = useState<Package[]>(initialPackages);
+  const [activeSubscription, setActiveSubscription] =
+    useState<ActiveSubscription | null>(initialActiveSubscription);
   const [loading, setLoading] = useState(false);
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
 
@@ -41,7 +43,7 @@ const SubscriptionContent = ({
       ]);
       setPackages(pkgs);
       setActiveSubscription(active);
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to load subscription data");
     }
   };

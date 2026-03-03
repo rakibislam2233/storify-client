@@ -4,12 +4,10 @@ import {
   getAllPackages,
 } from "@/services/subscription.service";
 import { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Subscription | Storify",
   description: "Manage your subscription plans.",
 };
-
 export default async function SubscriptionPage() {
   const [packages, activeSubscription] = await Promise.all([
     getAllPackages().catch(() => []),
