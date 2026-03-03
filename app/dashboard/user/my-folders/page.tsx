@@ -1,7 +1,13 @@
-import React from "react";
+import MyFoldersContent from "@/components/Pages/Dashboard/User/MyFoldersContent";
+import { Metadata } from "next";
 
-const MyFolders = () => {
-  return <div>MyFolders</div>;
+export const metadata: Metadata = {
+  title: "My Folders | Storify",
+  description: "Manage your folders and files.",
 };
 
-export default MyFolders;
+const MyFoldersPage = () => {
+  return <MyFoldersContent />;
+};
+
+export default MyFoldersPage;

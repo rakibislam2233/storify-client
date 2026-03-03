@@ -23,6 +23,10 @@ export interface Folder {
   updatedAt: string;
   files?: FileItem[];
   children?: Folder[];
+  _count?: {
+    files: number;
+    children: number;
+  };
 }
 
 export interface DashboardStats {
