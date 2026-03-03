@@ -4,10 +4,7 @@ import { Folder } from "@/interface/file.interface";
 import { cn } from "@/lib/utils";
 import { getRootFolders } from "@/services/folder.service";
 import {
-  ChevronDown,
-  ChevronRight,
   CreditCard,
-  Folder as FolderLucide,
   FolderOpen,
   HelpCircle,
   LayoutDashboard,
@@ -92,69 +89,25 @@ const UserSidebar = ({
               (isMyFolders && pathname?.startsWith(item.href));
 
             return (
-              <div key={item.href}>
-                <Link
-                  href={item.href}
-                  onClick={onClose}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200 no-underline",
-                    isActive
-                      ? "bg-white text-primary shadow-sm ring-1 ring-gray-100"
-                      : "text-gray-500 hover:text-primary hover:bg-white/50",
-                  )}
-                >
-                  <item.icon
-                    className={cn(
-                      "w-5 h-5",
-                      isActive ? "text-primary" : "text-gray-400",
-                    )}
-                  />
-                  <span>{item.name}</span>
-                  {isMyFolders && (
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setIsMyFilesOpen(!isMyFilesOpen);
-                      }}
-                      className="ml-auto p-1 hover:bg-gray-100 rounded-md transition-colors"
-                    >
-                      {isMyFilesOpen ? (
-                        <ChevronDown className="w-4 h-4" />
-                      ) : (
-                        <ChevronRight className="w-4 h-4" />
-                      )}
-                    </button>
-                  )}
-                </Link>
-
-                {isMyFolders && isMyFilesOpen && (
-                  <div className="mt-1 ml-4 space-y-1 border-l-2 border-gray-100 pl-4">
-                    {rootFolders.length > 0 ? (
-                      rootFolders.map((folder) => (
-                        <Link
-                          key={folder.id}
-                          href={`/dashboard/user/my-folders/${folder.id}`}
-                          onClick={onClose}
-                          className={cn(
-                            "flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg hover:bg-white/50 transition-all no-underline",
-                            pathname?.includes(folder.id)
-                              ? "text-primary bg-white shadow-sm"
-                              : "text-gray-400 hover:text-primary",
-                          )}
-                        >
-                          <FolderLucide className="w-3.5 h-3.5" />
-                          <span className="truncate">{folder.name}</span>
-                        </Link>
-                      ))
-                    ) : (
-                      <div className="px-4 py-2 text-[10px] text-gray-400 font-medium">
-                        No folders yet
-                      </div>
-                    )}
-                  </div>
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className={cn(
+                  "flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200 no-underline",
+                  isActive
+                    ? "bg-white text-primary shadow-sm ring-1 ring-gray-100"
+                    : "text-gray-500 hover:text-primary hover:bg-white/50",
                 )}
-              </div>
+              >
+                <item.icon
+                  className={cn(
+                    "w-5 h-5",
+                    isActive ? "text-primary" : "text-gray-400",
+                  )}
+                />
+                <span>{item.name}</span>
+              </Link>
             );
           })}
         </nav>

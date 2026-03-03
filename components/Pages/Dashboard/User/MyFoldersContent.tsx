@@ -11,11 +11,8 @@ import {
   FileCode,
   FileText,
   Film,
-  Filter,
   FolderOpen,
   Image as ImageIcon,
-  LayoutGrid,
-  List,
   Loader2,
   MoreVertical,
   Music,
@@ -42,11 +39,12 @@ const MyFoldersContent = ({
 }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [isGridView, setIsGridView] = useState(true);
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+
+  const isRoot = currentFolderId === "root";
 
   const folders = initialFolders;
   const files = initialFiles;
@@ -208,64 +206,30 @@ const MyFoldersContent = ({
 
         {/* Top Actions */}
         <div className="flex items-center gap-4">
-          <div className="flex items-center bg-gray-50 rounded-xl p-1 border border-gray-100">
-            <button
-              onClick={() => setIsGridView(true)}
-              className={cn(
-                "p-2 rounded-lg transition-all",
-                isGridView
-                  ? "bg-white shadow-sm text-primary"
-                  : "text-gray-400 hover:text-gray-600",
-              )}
-            >
-              <LayoutGrid className="w-5 h-5" />
-            </button>
-            <button
-              onClick={() => setIsGridView(false)}
-              className={cn(
-                "p-2 rounded-lg transition-all",
-                !isGridView
-                  ? "bg-white shadow-sm text-primary"
-                  : "text-gray-400 hover:text-gray-600",
-              )}
-            >
-              <List className="w-5 h-5" />
-            </button>
-          </div>
-          <button className="p-2.5 text-gray-400 hover:text-gray-600 bg-white border border-gray-100 rounded-xl shadow-sm">
-            <Filter className="w-5 h-5" />
-          </button>
-
-          <div className="h-10 w-px bg-gray-100 mx-2" />
-
-          <label className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl font-bold cursor-pointer hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
-            <Upload className="w-5 h-5" />
-            <span>Upload File</span>
-            <input
-              type="file"
-              className="hidden"
-              onChange={handleFileUpload}
-              disabled={isUploading}
-            />
-          </label>
           <button
             onClick={() => setIsCreateFolderModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2.5 bg-white border-2 border-primary text-primary rounded-xl font-bold hover:bg-primary/5 transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 bg-white border-2 border-primary text-primary rounded-xl font-bold hover:bg-primary/5 transition-all outline-none"
           >
             <Plus className="w-5 h-5" />
             <span>New Folder</span>
           </button>
+
+          {!isRoot && (
+            <label className="flex items-center gap-2 px-6 py-2.5 bg-primary text-white rounded-xl font-bold cursor-pointer hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+              <Upload className="w-5 h-5" />
+              <span>Upload File</span>
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleFileUpload}
+                disabled={isUploading}
+              />
+            </label>
+          )}
         </div>
       </div>
 
-      <div
-        className={cn(
-          "gap-6",
-          isGridView
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-            : "flex flex-col",
-        )}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
         {isPending ? (
           Array.from({ length: 10 }).map((_, i) => (
             <div
@@ -283,24 +247,14 @@ const MyFoldersContent = ({
             {folders.map((folder) => (
               <div
                 key={folder.id}
-                className={cn(
-                  "group relative bg-white border border-gray-100 p-6 rounded-2xl hover:shadow-xl transition-all cursor-pointer ring-offset-2",
-                  isGridView
-                    ? "flex flex-col"
-                    : "flex items-center justify-between",
-                )}
+                className="group relative bg-white border border-gray-100 p-6 rounded-2xl hover:shadow-xl transition-all cursor-pointer ring-offset-2 flex flex-col"
                 onClick={() => handleFolderClick(folder)}
               >
-                <div
-                  className={cn(
-                    "flex items-center",
-                    isGridView ? "flex-col text-center" : "gap-4",
-                  )}
-                >
+                <div className="flex items-center flex-col text-center">
                   <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mb-4 text-amber-500 group-hover:scale-110 transition-transform">
                     <FolderOpen className="w-8 h-8 fill-amber-500" />
                   </div>
-                  <div className={isGridView ? "text-center" : "text-left"}>
+                  <div className="text-center">
                     <h3 className="text-base font-extrabold text-[#25324B] mb-1 truncate max-w-[180px]">
                       {folder.name}
                     </h3>
@@ -350,23 +304,13 @@ const MyFoldersContent = ({
             {files.map((file) => (
               <div
                 key={file.id}
-                className={cn(
-                  "group relative bg-white border border-gray-100 p-6 rounded-2xl hover:shadow-xl transition-all ring-offset-2",
-                  isGridView
-                    ? "flex flex-col"
-                    : "flex items-center justify-between",
-                )}
+                className="group relative bg-white border border-gray-100 p-6 rounded-2xl hover:shadow-xl transition-all ring-offset-2 flex flex-col"
               >
-                <div
-                  className={cn(
-                    "flex items-center",
-                    isGridView ? "flex-col text-center" : "gap-4",
-                  )}
-                >
+                <div className="flex items-center flex-col text-center">
                   <div className="w-14 h-14 bg-blue-50/50 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     {getFileIcon(file.type)}
                   </div>
-                  <div className={isGridView ? "text-center" : "text-left"}>
+                  <div className="text-center">
                     <h3 className="text-base font-extrabold text-[#25324B] mb-1 truncate max-w-[180px]">
                       {file.originalName}
                     </h3>
