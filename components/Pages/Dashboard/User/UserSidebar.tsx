@@ -28,7 +28,7 @@ const UserSidebar = ({
 
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard/user" },
-    { name: "My Folders", icon: FolderOpen, href: "/dashboard/user/folders" },
+    { name: "My Folders", icon: FolderOpen, href: "/dashboard/user/my-folders" },
     {
       name: "Subscription",
       icon: CreditCard,
