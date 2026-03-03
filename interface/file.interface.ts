@@ -23,6 +23,8 @@ export interface Folder {
   updatedAt: string;
   files?: FileItem[];
   children?: Folder[];
+  totalSize?: number;
+  totalFiles?: number;
   _count?: {
     files: number;
     children: number;

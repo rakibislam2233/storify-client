@@ -42,7 +42,8 @@ const SubscriptionContent = ({
       } else {
         toast.error(res.message || "Purchase failed");
       }
-    } catch (_error) {
+    } catch (err) {
+      console.error(err);
       toast.error("An error occurred during purchase");
     } finally {
       setPurchasingId(null);
