@@ -16,9 +16,10 @@ export const metadata: Metadata = {
 export default async function MyFoldersPage({
   params,
 }: {
-  params: { slug?: string[] };
+  params: Promise<{ slug?: string[] }>;
 }) {
-  const slug = params.slug || [];
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug || [];
   const currentFolderId = slug.length > 0 ? slug[slug.length - 1] : "root";
 
   // Fetch folders, files, and ancestry for breadcrumbs

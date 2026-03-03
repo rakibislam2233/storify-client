@@ -362,12 +362,22 @@ const MyFoldersContent = ({
                   <FolderOpen className="w-12 h-12 text-gray-200" />
                 </div>
                 <h3 className="text-xl font-extrabold text-[#25324B] mb-2">
-                  No files or folders found
+                  {isRoot ? "Create your first folder" : "This folder is empty"}
                 </h3>
                 <p className="text-gray-400 text-sm max-w-sm font-medium">
-                  This location is empty. Start organizing your files by
-                  creating a new folder or uploading a file.
+                  {isRoot
+                    ? "Start by creating a directory to organize your files. You can upload files once you are inside a folder."
+                    : "No files or subfolders found here. Start by uploading a file or creating a subfolder."}
                 </p>
+                {isRoot && (
+                  <button
+                    onClick={() => setIsCreateFolderModalOpen(true)}
+                    className="mt-6 flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-2xl font-black hover:bg-primary/90 transition-all shadow-xl shadow-primary/20"
+                  >
+                    <Plus className="w-5 h-5" />
+                    <span>New Folder</span>
+                  </button>
+                )}
               </div>
             )}
           </>
