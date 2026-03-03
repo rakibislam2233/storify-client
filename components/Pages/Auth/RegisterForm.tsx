@@ -25,8 +25,8 @@ export default function RegisterForm() {
   useEffect(() => {
     if (state?.success) {
       toast.success(state?.message || "Registration successful!");
-    } else if (state?.message && !state?.success) {
-      toast.error(state?.message);
+    } else if (state.message && !state.errors) {
+      toast.error(state.message);
     }
   }, [state]);
 
@@ -86,18 +86,6 @@ export default function RegisterForm() {
           error={state?.errors?.password}
           required
         />
-
-        <FormInput
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          label="Confirm Password"
-          icon={Lock}
-          placeholder="Confirm your password"
-          error={state?.errors?.confirmPassword}
-          required
-        />
-
         <Button
           type="submit"
           disabled={isPending}

@@ -8,7 +8,7 @@ import {
   forgotPasswordValidationSchema,
   loginValidationSchema,
   registerFormValidationSchema,
-  resetPasswordValidationSchema,
+  resetPasswordFormValidationSchema,
   verifyOtpValidationSchema,
 } from "@/validation/auth.validation";
 import { cookies } from "next/headers";
@@ -239,8 +239,7 @@ export async function verifyOtp(
     sessionId: sessionId,
     code: values.otp || values.code,
   };
-  const parsed = verifyOtpValidationSchema.safeParse(values);
-
+  const parsed = verifyOtpValidationSchema.safeParse(data);
   if (!parsed.success) {
     return {
       success: false,
@@ -309,12 +308,12 @@ export async function resetPassword(
   payload: any,
 ): Promise<AuthActionState> {
   const values = Object.fromEntries(payload.entries());
-
-  const parsed = resetPasswordValidationSchema.safeParse({
+  const cookieStore = await cookies();
+  const resetPasswordToken = cookieStore.get("resetPasswordToken")?.value;
+  const parsed = resetPasswordFormValidationSchema.safeParse({
     password: values.password,
     confirmPassword: values.confirmPassword,
   });
-
   if (!parsed.success) {
     return {
       success: false,
@@ -326,21 +325,17 @@ export async function resetPassword(
   }
 
   try {
-    const resetToken = await getCookie("resetPasswordToken");
-
-    if (!resetToken) {
+    if (!resetPasswordToken) {
       return {
         success: false,
         message: "Reset token expired or missing. Please try again.",
         timestamp: Date.now(),
       };
     }
-
     const res = await api.post("/auth/reset-password", {
-      ...parsed.data,
-      token: resetToken,
+      resetPasswordToken: resetPasswordToken,
+      password: parsed.data.password,
     });
-
     if (!res.success) {
       return {
         success: false,
@@ -348,10 +343,8 @@ export async function resetPassword(
         timestamp: Date.now(),
       };
     }
-
     // Success - clear the token
     await deleteCookie("resetPasswordToken");
-
     return {
       success: true,
       message: "Password reset successful!",

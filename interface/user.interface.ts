@@ -1,6 +1,5 @@
 export enum UserRole {
   USER = "USER",
-  COMPANY = "COMPANY",
   ADMIN = "ADMIN",
 }
 
@@ -25,17 +24,4 @@ export interface IUser {
   companyId: string | null;
   isDeleted: false;
   createdAt: string;
-  company?: {
-    id: string;
-    name: string;
-    description: string | null;
-    website: string | null;
-    logo: string | null;
-    location: string | null;
-    industry: string | null;
-    size: string;
-    foundedYear: string;
-    createdAt: string;
-    updatedAt: string;
-  };
 }

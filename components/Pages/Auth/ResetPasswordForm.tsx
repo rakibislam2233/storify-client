@@ -1,8 +1,7 @@
 "use client";
-
 import Logo from "@/components/Shared/Navbar/Logo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FormInput } from "@/components/ui/form-input";
 import { AuthActionState, resetPassword } from "@/services/auth.service";
 import { Lock } from "lucide-react";
 import Link from "next/link";
@@ -29,17 +28,14 @@ export default function ResetPasswordForm() {
   useEffect(() => {
     if (state?.success) {
       toast.success(state?.message || "Password reset successfully!");
-    } else if (state?.message && !state?.success) {
-      toast.error(state?.message);
+    } else if (state.message && !state.errors) {
+      toast.error(state.message);
     }
   }, [state]);
 
-  // Redirect to login on successful password reset
   useEffect(() => {
     if (state?.success) {
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000); // Wait 2 seconds before redirecting
+      router.push("/login");
     }
   }, [state, router]);
 
@@ -58,53 +54,29 @@ export default function ResetPasswordForm() {
       </div>
 
       <form action={action} className="space-y-6">
-        {state?.message && (
-          <div
-            className={`p-3 text-sm rounded ${state.success ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
-          >
-            {state.message}
-          </div>
-        )}
+        <FormInput
+          id="password"
+          name="password"
+          type="password"
+          label="Password"
+          icon={Lock}
+          defaultValue={state?.inputs?.password ?? undefined}
+          placeholder="Enter your password"
+          error={state?.errors?.password}
+          required
+        />
 
-        <div className="space-y-2 text-left">
-          <label className="text-sm font-medium text-gray-700 block text-left">
-            New Password
-          </label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input
-              name="password"
-              type="password"
-              placeholder="Enter your password"
-              className="w-full h-12 pl-12 bg-gray-50 border-gray-100 rounded-none outline-none shadow-none focus-visible:ring-0 focus-visible:border-primary focus-visible:bg-white transition-all text-sm"
-            />
-          </div>
-          {state?.errors?.password && (
-            <p className="text-sm text-red-500 mt-1">
-              {state.errors.password[0]}
-            </p>
-          )}
-        </div>
-
-        <div className="space-y-2 text-left">
-          <label className="text-sm font-medium text-gray-700 block text-left">
-            Confirm Password
-          </label>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input
-              name="confirmPassword"
-              type="password"
-              placeholder="Enter your confirm password"
-              className="w-full h-12 pl-12 bg-gray-50 border-gray-100 rounded-none outline-none shadow-none focus-visible:ring-0 focus-visible:border-primary focus-visible:bg-white transition-all text-sm"
-            />
-          </div>
-          {state?.errors?.confirmPassword && (
-            <p className="text-sm text-red-500 mt-1">
-              {state.errors.confirmPassword[0]}
-            </p>
-          )}
-        </div>
+        <FormInput
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          label="Confirm Password"
+          icon={Lock}
+          defaultValue={state?.inputs?.confirmPassword ?? undefined}
+          placeholder="Enter your password"
+          error={state?.errors?.confirmPassword}
+          required
+        />
 
         <Button
           type="submit"

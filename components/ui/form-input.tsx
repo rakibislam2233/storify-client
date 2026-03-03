@@ -35,7 +35,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
             ref={ref}
             type={inputType}
             className={cn(
-              "w-full h-12  rounded-none outline-none shadow-none focus-visible:ring-0 focus-visible:border-primary focus-visible:bg-white transition-all text-sm",
+              "w-full h-12  rounded outline-none shadow-none focus-visible:ring-0 focus-visible:border-primary focus-visible:bg-white transition-all text-sm",
               Icon && "pl-10",
               isPassword && "pr-10",
               error ? "border-red-500 bg-red-50/10" : "bg-gray-50 border-gray-100",
