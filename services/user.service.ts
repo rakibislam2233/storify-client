@@ -161,3 +161,43 @@ export async function deleteUserById(id: string) {
     throw error;
   }
 }
+
+export async function getUserDashboardStats() {
+  const accessToken = await getCookie("accessToken");
+  const refreshToken = await getCookie("refreshToken");
+
+  if (!accessToken || !refreshToken) {
+    throw new Error("User not authenticated");
+  }
+
+  try {
+    const res = await api.get("/dashboard/user");
+    if (!res.success) {
+      throw new Error(res.message || "Failed to fetch dashboard stats");
+    }
+    return res.data;
+  } catch (error: any) {
+    console.error("Failed to fetch dashboard stats:", error.message);
+    throw error;
+  }
+}
+
+export async function getAdminDashboardStats() {
+  const accessToken = await getCookie("accessToken");
+  const refreshToken = await getCookie("refreshToken");
+
+  if (!accessToken || !refreshToken) {
+    throw new Error("Admin not authenticated");
+  }
+
+  try {
+    const res = await api.get("/dashboard/admin");
+    if (!res.success) {
+      throw new Error(res.message || "Failed to fetch admin stats");
+    }
+    return res.data;
+  } catch (error: any) {
+    console.error("Failed to fetch admin stats:", error.message);
+    throw error;
+  }
+}

@@ -1,48 +1,51 @@
 export interface FileItem {
   id: string;
+  originalName: string;
   name: string;
-  type: 'file' | 'folder';
-  size?: number;
-  mimeType?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  parentId?: string;
-  userId: string;
-  path: string;
-}
-
-export interface Folder extends FileItem {
-  type: 'folder';
-  children?: FileItem[];
-}
-
-export interface UploadedFile extends FileItem {
-  type: 'file';
+  type: string;
+  size: number;
   url: string;
-}
-
-export interface SubscriptionPlan {
-  id: string;
-  name: 'Free' | 'Silver' | 'Gold' | 'Diamond';
-  price: number;
-  storageLimit: number; // in GB
-  maxFolderDepth: number;
-  allowedFileTypes: string[];
-  maxFileSize: number; // in MB
-  maxTotalFiles: number;
-  features: string[];
-}
-
-export interface UserSubscription {
-  id: string;
   userId: string;
-  planId: string;
-  status: 'active' | 'inactive' | 'cancelled';
-  startDate: Date;
-  endDate?: Date;
-  currentUsage: {
-    storageUsed: number; // in GB
-    fileCount: number;
-    folderCount: number;
+  folderId: string;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+  level: number;
+  userId: string;
+  parentId: string | null;
+  isDeleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  files?: FileItem[];
+  children?: Folder[];
+}
+
+export interface DashboardStats {
+  totalStorage: number;
+  usedStorage: number;
+  totalFiles: number;
+  totalFolders: number;
+  storageUsagePercentage: number;
+  fileTypeDistribution: {
+    type: string;
+    count: number;
+    size: number;
+  }[];
+  recentFiles: FileItem[];
+}
+
+export interface UserDashboardData {
+  stats: DashboardStats;
+  package: {
+    name: string;
+    maxFolders: number;
+    maxNestingLevel: number;
+    maxFileSize: number;
+    totalFileLimit: number;
   };
 }

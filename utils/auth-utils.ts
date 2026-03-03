@@ -1,4 +1,4 @@
-export type UserRole = "USER" | "COMPANY" | "ADMIN";
+export type UserRole = "USER" | "ADMIN";
 
 export type RouteConfig = {
   exact: string[];
@@ -20,10 +20,6 @@ export const commonProtectedRoutes: RouteConfig = {
 
 export const userProtectedRoutes: RouteConfig = {
   patterns: [/^\/dashboard\/user/],
-  exact: [],
-};
-export const companyProtectedRoutes: RouteConfig = {
-  patterns: [/^\/dashboard\/company/],
   exact: [],
 };
 
@@ -48,12 +44,12 @@ export const isRouteMatches = (
 
 export const getRouteOwner = (
   pathname: string,
-): "USER" | "COMPANY" | "ADMIN" | "COMMON" | null => {
+): "USER" | "ADMIN" | "COMMON" | null => {
   if (isRouteMatches(pathname, userProtectedRoutes)) {
     return "USER";
   }
-  if (isRouteMatches(pathname, companyProtectedRoutes)) {
-    return "COMPANY";
+  if (isRouteMatches(pathname, adminProtectedRoutes)) {
+    return "ADMIN";
   }
   if (isRouteMatches(pathname, commonProtectedRoutes)) {
     return "COMMON";
@@ -64,9 +60,6 @@ export const getRouteOwner = (
 export const getDefaultDashboardRoute = (role: UserRole): string => {
   if (role === "USER") {
     return "/dashboard/user";
-  }
-  if (role === "COMPANY") {
-    return "/dashboard/company";
   }
   if (role === "ADMIN") {
     return "/dashboard/admin";
