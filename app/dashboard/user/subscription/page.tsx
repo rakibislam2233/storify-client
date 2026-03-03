@@ -1,4 +1,8 @@
 import SubscriptionContent from "@/components/Pages/Dashboard/User/SubscriptionContent";
+import {
+  getActiveSubscription,
+  getAllPackages,
+} from "@/services/subscription.service";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -6,8 +10,16 @@ export const metadata: Metadata = {
   description: "Manage your subscription plans.",
 };
 
-const SubscriptionPage = () => {
-  return <SubscriptionContent />;
-};
+export default async function SubscriptionPage() {
+  const [packages, activeSubscription] = await Promise.all([
+    getAllPackages().catch(() => []),
+    getActiveSubscription().catch(() => null),
+  ]);
 
-export default SubscriptionPage;
+  return (
+    <SubscriptionContent
+      initialPackages={packages}
+      initialActiveSubscription={activeSubscription}
+    />
+  );
+}

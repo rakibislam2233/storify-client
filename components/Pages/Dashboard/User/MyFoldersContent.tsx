@@ -26,20 +26,29 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-const MyFoldersContent = () => {
+const MyFoldersContent = ({
+  initialFolders = [],
+  initialFiles = [],
+}: {
+  initialFolders?: Folder[];
+  initialFiles?: FileItem[];
+}) => {
   const [currentFolderId, setCurrentFolderId] = useState<string>("root");
-  const [folders, setFolders] = useState<Folder[]>([]);
-  const [files, setFiles] = useState<FileItem[]>([]);
+  const [folders, setFolders] = useState<Folder[]>(initialFolders);
+  const [files, setFiles] = useState<FileItem[]>(initialFiles);
   const [breadcrumbs, setBreadcrumbs] = useState<
     { id: string; name: string }[]
   >([{ id: "root", name: "My Folders" }]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isCreateFolderModalOpen, setIsCreateFolderModalOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
-    fetchContent(currentFolderId);
+    // Only fetch if we are NOT at root (since root is handled by server component)
+    if (currentFolderId !== "root") {
+      fetchContent(currentFolderId);
+    }
   }, [currentFolderId]);
 
   const fetchContent = async (folderId: string) => {
@@ -59,7 +68,7 @@ const MyFoldersContent = () => {
 
       setFolders(foldersData);
       setFiles(filesData);
-    } catch (error) {
+    } catch (_err) {
       toast.error("Failed to load content");
     } finally {
       setLoading(false);
@@ -89,7 +98,7 @@ const MyFoldersContent = () => {
       } else {
         toast.error(res.message || "Failed to create folder");
       }
-    } catch (error) {
+    } catch (_err) {
       toast.error("An error occurred");
     }
   };
@@ -113,7 +122,7 @@ const MyFoldersContent = () => {
       } else {
         toast.error(res.message || "Upload failed");
       }
-    } catch (error) {
+    } catch (_err) {
       toast.error("An error occurred during upload");
     } finally {
       setIsUploading(false);
@@ -128,7 +137,7 @@ const MyFoldersContent = () => {
         toast.success("Folder deleted");
         fetchContent(currentFolderId);
       }
-    } catch (error) {
+    } catch (_err) {
       toast.error("Failed to delete");
     }
   };
@@ -141,7 +150,7 @@ const MyFoldersContent = () => {
         toast.success("File deleted");
         fetchContent(currentFolderId);
       }
-    } catch (error) {
+    } catch (_err) {
       toast.error("Failed to delete");
     }
   };

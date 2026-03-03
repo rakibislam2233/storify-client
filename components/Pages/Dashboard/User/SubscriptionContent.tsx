@@ -13,21 +13,24 @@ import {
   Loader2,
   Sparkles,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-const SubscriptionContent = () => {
-  const [packages, setPackages] = useState<any[]>([]);
-  const [activeSubscription, setActiveSubscription] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+const SubscriptionContent = ({
+  initialPackages = [],
+  initialActiveSubscription = null,
+}: {
+  initialPackages?: any[];
+  initialActiveSubscription?: any;
+}) => {
+  const [packages, setPackages] = useState<any[]>(initialPackages);
+  const [activeSubscription, setActiveSubscription] = useState<any>(
+    initialActiveSubscription,
+  );
+  const [loading, setLoading] = useState(false);
   const [purchasingId, setPurchasingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
-    setLoading(true);
     try {
       const [pkgs, active] = await Promise.all([
         getAllPackages(),
@@ -37,8 +40,6 @@ const SubscriptionContent = () => {
       setActiveSubscription(active);
     } catch (error) {
       toast.error("Failed to load subscription data");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -59,14 +60,10 @@ const SubscriptionContent = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-20 text-gray-400 font-epilogue">
-        <Loader2 className="w-10 h-10 animate-spin mb-4 text-primary" />
-        <p className="font-medium">Loading subscription plans...</p>
-      </div>
-    );
-  }
+  // Find active package details from the packages list to get limits
+  const activePackageDetails = activeSubscription
+    ? packages.find((p) => p.name === activeSubscription.packageName)
+    : null;
 
   return (
     <div className="p-6 font-epilogue">
@@ -88,37 +85,49 @@ const SubscriptionContent = () => {
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <h2 className="text-xl font-extrabold text-[#25324B]">
-                  Current Plan: {activeSubscription.package.name}
+                  Current Plan: {activeSubscription.packageName}
                 </h2>
                 <span className="bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
                   Active
                 </span>
               </div>
               <p className="text-gray-500 font-medium text-sm">
-                Next billing date:{" "}
-                {new Date(activeSubscription.endDate).toLocaleDateString()}
+                Started on:{" "}
+                {new Date(activeSubscription.startDate).toLocaleDateString()}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-8 text-right">
+            {activePackageDetails && (
+              <>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1 text-nowrap">
+                    Storage Limit
+                  </span>
+                  <span className="text-lg font-extrabold text-primary">
+                    {(
+                      activePackageDetails.totalStorageLimit /
+                      (1024 * 1024 * 1024)
+                    ).toFixed(0)}{" "}
+                    GB
+                  </span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1 text-nowrap">
+                    File Limit
+                  </span>
+                  <span className="text-lg font-extrabold text-primary">
+                    {activePackageDetails.totalFileLimit} Files
+                  </span>
+                </div>
+              </>
+            )}
             <div className="flex flex-col">
-              <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">
-                Storage Limit
+              <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1 text-nowrap">
+                Price Paid
               </span>
               <span className="text-lg font-extrabold text-primary">
-                {(
-                  activeSubscription.package.totalStorageLimit /
-                  (1024 * 1024 * 1024)
-                ).toFixed(0)}{" "}
-                GB
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">
-                File Limit
-              </span>
-              <span className="text-lg font-extrabold text-primary">
-                {activeSubscription.package.totalFileLimit} Files
+                ${activeSubscription.price}
               </span>
             </div>
           </div>
