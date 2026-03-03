@@ -1,13 +1,13 @@
 "use client";
 
-import { Briefcase, Building2, FileText, Users } from "lucide-react";
+import { Cloud, FolderOpen, HardDrive, Users } from "lucide-react";
 
 interface AdminDashboardContentProps {
   stats?: {
     totalUsers: number;
-    totalJobs: number;
-    totalCompanies: number;
-    totalApplications: number;
+    totalFiles: number;
+    totalFolders: number;
+    totalStorage: number;
   };
   error?: string;
 }
@@ -32,21 +32,21 @@ const AdminDashboardContent = ({ stats, error }: AdminDashboardContentProps) => 
       color: "bg-primary",
     },
     {
-      label: "Total Jobs",
-      value: stats?.totalJobs || 0,
-      icon: Briefcase,
+      label: "Total Files",
+      value: stats?.totalFiles || 0,
+      icon: Cloud,
       color: "bg-[#56CDAD]",
     },
     {
-      label: "Total Companies",
-      value: stats?.totalCompanies || 0,
-      icon: Building2,
+      label: "Total Folders",
+      value: stats?.totalFolders || 0,
+      icon: FolderOpen,
       color: "bg-[#FFB836]",
     },
     {
-      label: "Total Applications",
-      value: stats?.totalApplications || 0,
-      icon: FileText,
+      label: "Storage Used",
+      value: `${(stats?.totalStorage || 0).toFixed(1)} GB`,
+      icon: HardDrive,
       color: "bg-[#4F46E5]",
     },
   ];
@@ -58,7 +58,7 @@ const AdminDashboardContent = ({ stats, error }: AdminDashboardContentProps) => 
           Admin Dashboard
         </h2>
         <p className="text-gray-500 font-medium text-sm">
-          Monitor and manage the entire platform.
+          Monitor and manage the file management system.
         </p>
       </div>
 
@@ -84,30 +84,31 @@ const AdminDashboardContent = ({ stats, error }: AdminDashboardContentProps) => 
         ))}
       </div>
 
+      {/* Subscription Plans Management */}
+      <div className="bg-white border border-gray-100 p-6 rounded-lg">
+        <h3 className="text-lg font-bold text-[#25324B] mb-4">
+          Subscription Plans
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {['Free', 'Silver', 'Gold', 'Diamond'].map((plan, index) => (
+            <div key={index} className="border border-gray-200 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 mb-2">{plan}</h4>
+              <p className="text-sm text-gray-500">
+                {plan === 'Free' ? '0 users' : 
+                 plan === 'Silver' ? '0 users' : 
+                 plan === 'Gold' ? '0 users' : '0 users'}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Recent Activity */}
-      <div className="bg-white border border-gray-100 p-6 rounded-lg ">
+      <div className="bg-white border border-gray-100 p-6 rounded-lg">
         <h3 className="text-lg font-bold text-[#25324B] mb-4">
           Recent Activity
         </h3>
-        <h1 className="text-gray-500">No recent activity available</h1>
-        {/* <div className="space-y-4">
-          {stats.recentActivity?.slice(0, 5).map((activity: any, index: number) => (
-            <div key={index} className="flex items-center justify-between p-4 border-b border-gray-50 last:border-0">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                  <Users className="w-4 h-4 text-gray-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{activity.type}</p>
-                  <p className="text-xs text-gray-500">{activity.description}</p>
-                </div>
-              </div>
-              <span className="text-xs text-gray-400">
-                {new Date(activity.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-          )) || <p className="text-gray-500 text-sm">No recent activity</p>}
-        </div> */}
+        <p className="text-gray-500">No recent activity available</p>
       </div>
     </div>
   );

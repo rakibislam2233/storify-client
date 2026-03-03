@@ -1,16 +1,19 @@
 "use client";
 
+import Logo from "@/components/Shared/Navbar/Logo";
 import { cn } from "@/lib/utils";
 import {
-  Bookmark,
-  Briefcase,
-  HelpCircle,
-  LayoutDashboard,
-  MessageSquare,
-  Settings,
-  User,
+    Bell,
+    Cloud,
+    CreditCard,
+    FolderOpen,
+    HardDrive,
+    HelpCircle,
+    LayoutDashboard,
+    Settings,
+    Upload,
+    User
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,17 +29,20 @@ const UserSidebar = ({
   const menuItems = [
     { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard/user" },
     {
-      name: "Messages",
-      icon: MessageSquare,
-      href: "/dashboard/user/messages",
+      name: "My Files",
+      icon: Cloud,
+      href: "/dashboard/user/files",
+    },
+    { name: "Folders", icon: FolderOpen, href: "/dashboard/user/folders" },
+    { name: "Upload", icon: Upload, href: "/dashboard/user/upload" },
+    { name: "Storage", icon: HardDrive, href: "/dashboard/user/storage" },
+    { name: "Subscription", icon: CreditCard, href: "/dashboard/user/subscription" },
+    {
+      name: "Notifications",
+      icon: Bell,
+      href: "/dashboard/user/notifications",
       badge: 2,
     },
-    {
-      name: "My Applications",
-      icon: Briefcase,
-      href: "/dashboard/user/applications",
-    },
-    { name: "Saved Jobs", icon: Bookmark, href: "/dashboard/user/saved" },
     { name: "My Profile", icon: User, href: "/dashboard/user/profile" },
   ];
 
@@ -66,18 +72,7 @@ const UserSidebar = ({
             href="/"
             className="flex items-center justify-center gap-1 mb-6"
           >
-            <div className="relative size-12">
-              <Image
-                src="/asset/logo/logo.png"
-                alt="QuickHire Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <span className="text-2xl md:text-3xl font-extrabold text-[#25324B]">
-              QuickHire
-            </span>
+            <Logo />
           </Link>
         </div>
 

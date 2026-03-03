@@ -1,17 +1,17 @@
 "use client";
 
+import Logo from "@/components/Shared/Navbar/Logo";
 import { cn } from "@/lib/utils";
 import {
-    Building2,
-    CheckCircle2,
-    Folder,
-    HelpCircle,
-    LayoutDashboard,
-    Settings,
-    ShieldCheck,
-    Users
+  Cloud,
+  CreditCard,
+  FolderOpen,
+  HardDrive,
+  HelpCircle,
+  LayoutDashboard,
+  Settings,
+  Users
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -27,14 +27,15 @@ const AdminSidebar = ({
   const menuItems = [
     { name: "Overview", icon: LayoutDashboard, href: "/dashboard/admin" },
     { name: "Users", icon: Users, href: "/dashboard/admin/users" },
-    { name: "Companies", icon: Building2, href: "/dashboard/admin/companies" },
-    { name: "Categories", icon: Folder, href: "/dashboard/admin/categories" },
-    { name: "All Jobs", icon: CheckCircle2, href: "/dashboard/admin/jobs" },
+    { name: "Files", icon: Cloud, href: "/dashboard/admin/files" },
+    { name: "Folders", icon: FolderOpen, href: "/dashboard/admin/folders" },
+    { name: "Storage", icon: HardDrive, href: "/dashboard/admin/storage" },
+    { name: "Subscriptions", icon: CreditCard, href: "/dashboard/admin/subscriptions" },
   ];
 
   const settingsItems = [
-    { name: "Settings", icon: Settings, href: "/dashboard/admin" },
-    { name: "Help Center", icon: HelpCircle, href: "/dashboard/admin" },
+    { name: "Settings", icon: Settings, href: "/dashboard/admin/settings" },
+    { name: "Help Center", icon: HelpCircle, href: "/dashboard/admin/help" },
   ];
 
   return (
@@ -58,18 +59,7 @@ const AdminSidebar = ({
             href="/"
             className="flex items-center justify-center gap-1 mb-6"
           >
-            <div className="relative size-12">
-              <Image
-                src="/asset/logo/logo.png"
-                alt="QuickHire Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <span className="text-2xl md:text-3xl font-extrabold text-[#25324B]">
-              QuickHire
-            </span>
+            <Logo />
           </Link>
         </div>
 

@@ -1,9 +1,10 @@
-import { Briefcase, Calendar, FileText } from "lucide-react";
+import { Cloud, FolderOpen, HardDrive, Upload } from "lucide-react";
 
 interface UserDashboardStats {
-  totalApplications: number;
-  savedJobs: number;
-  interviewsScheduled: number;
+  totalFiles: number;
+  totalFolders: number;
+  storageUsed: number;
+  recentUploads: number;
 }
 
 interface UserDashboardContentProps {
@@ -13,22 +14,28 @@ interface UserDashboardContentProps {
 const UserDashboardContent = ({ stats }: UserDashboardContentProps) => {
   const userStats = [
     {
-      label: "Total Applied Jobs",
-      value: stats?.totalApplications || 0,
-      icon: Briefcase,
+      label: "Total Files",
+      value: stats?.totalFiles || 0,
+      icon: Cloud,
       color: "bg-primary",
     },
     {
-      label: "Interviews Scheduled",
-      value: stats?.interviewsScheduled || 0,
-      icon: Calendar,
+      label: "Total Folders",
+      value: stats?.totalFolders || 0,
+      icon: FolderOpen,
       color: "bg-[#56CDAD]",
     },
     {
-      label: "Saved Jobs",
-      value: stats?.savedJobs || 0,
-      icon: FileText,
+      label: "Storage Used",
+      value: `${(stats?.storageUsed || 0).toFixed(1)} GB`,
+      icon: HardDrive,
       color: "bg-[#FFB836]",
+    },
+    {
+      label: "Recent Uploads",
+      value: stats?.recentUploads || 0,
+      icon: Upload,
+      color: "bg-[#4F46E5]",
     },
   ];
 
@@ -39,7 +46,7 @@ const UserDashboardContent = ({ stats }: UserDashboardContentProps) => {
           User Dashboard
         </h2>
         <p className="text-gray-500 font-medium text-sm">
-          Track your job search progress and applications.
+          Manage your files and track storage usage.
         </p>
       </div>
 
@@ -65,49 +72,52 @@ const UserDashboardContent = ({ stats }: UserDashboardContentProps) => {
         ))}
       </div>
 
-      {/* Recent Applications */}
-      <div className="bg-white border border-gray-100 p-6 rounded-lg ">
+      {/* Storage Usage */}
+      <div className="bg-white border border-gray-100 p-6 rounded-lg">
         <h3 className="text-lg font-bold text-[#25324B] mb-4">
-          Recent Applications
+          Storage Usage
         </h3>
-        <h1 className="text-gray-500">No recent applications available</h1>
-        {/* <div className="space-y-4">
-          {stats.recentApplications
-            ?.slice(0, 5)
-            .map((app: any, index: number) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-4 border-b border-gray-50 last:border-0"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Briefcase className="w-4 h-4 text-gray-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {app.jobTitle}
-                    </p>
-                    <p className="text-xs text-gray-500">{app.company}</p>
-                  </div>
-                </div>
-                <span
-                  className={`px-2 py-1 text-xs rounded-full ${
-                    app.status === "ACCEPTED"
-                      ? "bg-green-50 text-green-600"
-                      : app.status === "INTERVIEWING"
-                        ? "bg-blue-50 text-blue-600"
-                        : app.status === "REJECTED"
-                          ? "bg-red-50 text-red-600"
-                          : "bg-gray-50 text-gray-600"
-                  }`}
-                >
-                  {app.status}
-                </span>
-              </div>
-            )) || (
-            <p className="text-gray-500 text-sm">No recent applications</p>
-          )}
-        </div> */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-gray-600">Used Storage</span>
+            <span className="text-sm font-semibold text-gray-900">
+              {(stats?.storageUsed || 0).toFixed(1)} GB / 10 GB
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div 
+              className="bg-primary h-2 rounded-full transition-all duration-300"
+              style={{ width: `${Math.min(((stats?.storageUsed || 0) / 10) * 100, 100)}%` }}
+            ></div>
+          </div>
+          <p className="text-xs text-gray-500">
+            {Math.max(0, 10 - (stats?.storageUsed || 0)).toFixed(1)} GB available
+          </p>
+        </div>
+      </div>
+
+      {/* Recent Files */}
+      <div className="bg-white border border-gray-100 p-6 rounded-lg">
+        <h3 className="text-lg font-bold text-[#25324B] mb-4">
+          Recent Files
+        </h3>
+        <p className="text-gray-500">No recent files available</p>
+      </div>
+
+      {/* Subscription Plan */}
+      <div className="bg-white border border-gray-100 p-6 rounded-lg">
+        <h3 className="text-lg font-bold text-[#25324B] mb-4">
+          Your Subscription Plan
+        </h3>
+        <div className="flex items-center justify-between">
+          <div>
+            <h4 className="font-semibold text-gray-900">Free Plan</h4>
+            <p className="text-sm text-gray-500">10 GB Storage • Basic Features</p>
+          </div>
+          <button className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors">
+            Upgrade Plan
+          </button>
+        </div>
       </div>
     </div>
   );
